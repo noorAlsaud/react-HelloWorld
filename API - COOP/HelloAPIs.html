@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>Poke API by Noor</title>
+
+    <!-- styles -->
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+
+    <!-- scripts -->
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+
+    <!-- google fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet">
+
+    <style>
+        table {
+            text-align: center;
+        }
+
+        * {
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        table th {
+            font-size: larger;
+        }
+
+        /* .PokeDiv {
+            height: auto;
+            width: auto;
+        } */
+
+        body {
+            background-image: url(/pics/annie-spratt-0ZPSX_mQ3xI-unsplash.jpg);
+            background-size:cover;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="PokeDiv">
+        <table id="PokeTable" class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Poke Name</th>
+                    <th>Poke URL</th>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <th><strong>Poke Name</strong></th>
+                    <th><strong>Poke URL</strong></th>
+            </tfoot>
+        </table>
+    </div>
+
+</body>
+
+</html>
+
+
+<script>
+    /* Formatting function for row details - modify as you need */
+function format ( d ) {
+    // `d` is the original data object for the row
+    return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
+        '<tr>'+
+            '<td>Full name:</td>'+
+            '<td>'+d.name+'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td>Extension number:</td>'+
+            '<td>'+d.url+'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td>Extra info:</td>'+
+            '<td>And any further details here (images etc)...</td>'+
+        '</tr>'+
+    '</table>';
+}
+ 
+$(document).ready(function() {
+    var table = $('#PokeTable').DataTable( {
+        "ajax": {
+                type: "GET",
+                url: "https://pokeapi.co/api/v2/pokemon/",
+                dataSrc: "results"
+        },
+        "columns": [
+            {
+                "data":      'name',
+                "data":      'url'
+            }
+        ],
+        "order": [[1, 'asc']]
+    } );
+     
+    // Add event listener for opening and closing details
+    $('#PokeTable').on('click', 'td.details-control', function () {
+        var tr = $(this).closest('tr');
+        var row = table.row( tr );
+ 
+        if ( row.child.isShown() ) {
+            // This row is already open - close it
+            row.child.hide();
+            tr.removeClass('shown');
+        }
+        else {
+            // Open this row
+            row.child( format(row.data()) ).show();
+            tr.addClass('shown');
+        }
+    } );
+} );
+</script>

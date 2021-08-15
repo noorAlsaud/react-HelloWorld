@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/">
+
+    <title>Poke API by Noor</title>
+
+    <!-- styles -->
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+
+    <!-- CSS dependencies -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+
+    <!-- scripts -->
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+    <script src="//cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- google fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css">
+
+
+
+
+    <style>
+        table {
+            text-align: center;
+        }
+
+        * {
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        table th {
+            font-size: larger;
+        }
+
+        td.details-control {
+            text-align: center;
+            color: forestgreen;
+            cursor: pointer;
+        }
+
+        tr.shown td.details-control {
+            text-align: center;
+            color: red;
+        }
+
+        .PokeDetailsButton {
+            background: none !important;
+            border: none;
+            padding: 0 !important;
+            /*input has OS specific font-family*/
+            color: rgb(73, 75, 197);
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 16px;
+
+        }
+
+        .PokeDetailsButton:hover {
+            color: yellowgreen;
+        }
+
+        button {
+            direction: unset;
+            border: unset;
+            background: unset;
+            font-size: 20px;
+            /* text-decoration: underline; */
+        }
+
+        button:hover {
+            font-size: 26px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="PokeDiv">
+        <table id="PokeTable" class="table table-hover">
+            <thead>
+                <tr>
+                    <th><strong>Poke Name</strong></th>
+                    <th><strong>Poke Details</strong></th>
+                </tr>
+            </thead>
+        </table>
+
+        <div id="ErrorMessage"></div>
+    </div>
+
+</body>
+
+</html>
+
+
+<script>
+    //when the page loaded: render the table : 
+    $(document).ready(function () {
+
+        $('#PokeTable').DataTable({
+            ajax: {
+                type: "GET",
+                url: 'https://pokeapi.co/api/v2/pokemon?limit={limit}&offset={offset}', //page1 --> offset: (10) + page2 --> offset: (20)  
+                limit: 23, 
+                offset: 0,
+                length: 3,
+                contentType: 'application/json; charset=utf-8',
+                dataSrc: "results",
+                serverSide: true,
+
+                },
+                columns: [
+                    {
+                        data: "name",
+                    },
+                    {
+                        data: "url",
+                        render: function (dataUrl) {
+                            return "<button class='PokeDetailsButton' data-poke-PokeId=" + dataUrl + ">Tell Me More!</button>";
+                        }
+                    }
+                ]
+            })
+
+
+        $("#PokeTable").on("click", ".PokeDetailsButton", function () {
+
+
+            var button = $(this);
+            var Pokeurl = button.attr("data-poke-PokeId");
+
+            debugger
+
+            //second call for ajax: to see details about POKE
+            $.ajax({
+                type: "GET",
+                url: Pokeurl,
+                contentType: 'application/json; charset=utf-8',
+                dataSrc: "results",
+                success: function (response) {
+
+                    debugger
+                    if (response == undefined) {
+                        document.getElementById('ErrorMessage').innerHTML = "حصل خطأ يرجى المحاولة لاحقاً";
+                    }
+                    debugger
+
+                    var abilities = "";
+                    for (let i = 0; i < response.abilities.length; i++) {
+
+                        abilities += response.abilities[i].ability.name
+                    }
+                    var moves = "";
+                    for (let i = 0; i < response.moves.length; i++) {
+
+                        moves += response.moves[i].move.name
+                    }
+                    var content = "Id: " + response.id +
+                        "<br>Order: " + response.order +
+                        "<br>Base Experience: " + response.base_experience +
+                        "<br>Height: " + response.height +
+                        "<br>Weight: " + response.weight +
+                        "<br>Species: " + response.species.name +
+                        "<br>Abilities: " + abilities +
+                        "<br>Moves: " + moves
+
+                    debugger
+
+                    Swal.fire({
+                        title: response.name,
+                        html: content
+                    });
+
+
+
+                },
+                error: function (response) {
+                    debugger
+                    document.getElementById('ErrorMessage').innerHTML = "Something went wrong! ";
+                }
+            });
+        });
+    })
+
+</script>

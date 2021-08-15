@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/"> 
+
+    <title>Poke API by Noor</title>
+
+    <!-- styles -->
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+
+    <!-- CSS dependencies -->
+    <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+
+    <!-- scripts -->
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+
+    <!-- google fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet">
+
+    
+    
+    <style>
+        table {
+            text-align: center;
+        }
+
+        * {
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        table th {
+            font-size: larger;
+        }
+
+        td.details-control {
+            text-align: center;
+            color: forestgreen;
+            cursor: pointer;
+        }
+
+        tr.shown td.details-control {
+            text-align: center;
+            color: red;
+        }
+
+        .PokeDetailsButton {
+            background: none !important;
+            border: none;
+            padding: 0 !important;
+            /*input has OS specific font-family*/
+            color: rgb(73, 75, 197);
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 16px;
+            
+        }
+
+        .PokeDetailsButton:hover{
+            color: yellowgreen;
+        }
+
+        /* .PokeDiv {
+            height: auto;
+            width: auto;
+        } */
+
+        body {
+            /* background-image: url(/pics/annie-spratt-0ZPSX_mQ3xI-unsplash.jpg);
+            background-size: cover; */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="PokeDiv">
+        <table id="PokeTable" class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Poke Name</th>
+                    <th>Poke URL</th>
+                    <th>Poke Details</th>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <th><strong>Poke Name</strong></th>
+                    <th><strong>Poke URL</strong></th>
+                    <th>Poke Details</th>
+            </tfoot>
+        </table>
+    </div>
+
+</body>
+
+</html>
+
+
+<script>
+    //when the page loaded: render the table : 
+    $(document).ready(function () {
+        var table = $('#PokeTable').DataTable({
+            ajax:
+            {
+                type: "GET",
+                url: "https://pokeapi.co/api/v2/pokemon/",
+                dataSrc: "results"
+            },
+            columns: [
+                {
+                    "data": "name"
+                },
+                {
+                    "data": "url"
+                },
+                {
+                    "data": "url",
+                    render: function (url) {
+                        return "<button class='PokeDetailsButton' data-customer-id=" + url + ">Tell Me More!</button>";
+                    }
+                }
+            ],
+            success: function (response) {
+                console.log("Hello Noor");
+            }
+
+        });
+
+        $("#PokeTable").on("click", function () {
+            var button = $(this);
+            alert("Button is clicked!");
+        });
+    });
+</script>

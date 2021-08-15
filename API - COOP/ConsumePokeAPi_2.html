@@ -1,0 +1,217 @@
+<html>
+
+<head>
+    <title>Try Poke API</title>
+    <!-- CSS only -->
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+   
+    
+
+    <style>
+        * {
+            text-align: center;
+        }
+
+        table {
+            text-align: center;
+        }
+    </style>
+
+
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+   
+</head>
+
+
+<body>
+    <main class="container">
+        <div class="my-3 p-3 bg-body rounded shadow-sm">
+
+            <!--<div id="SearchingDiv">
+<label>Poke Number</label>
+<input type="text" class="form-control" id="PokeSearch">
+<button  class="btn btn-primary js-Details">Search!</button>
+</div>-->
+            <table id="myTable">
+                <thead>
+                    <strong>Poke Names (Click for more details!)</strong>
+                </thead>
+            </table>
+
+
+            <div id="ErrorMessage"></div>
+
+
+<!-- 
+            <div id="PokeDetails" hidden="hidden">
+                <label>Name</label>
+                <span id="PokeName" style="background-color:cornflowerblue">Pokemon name</span>
+                <label>ability</label>
+                <span id="ability">Pokemon ability</span>
+            </div> -->
+
+
+        </div>
+    </main>
+
+
+
+</body>
+
+
+
+</html>
+
+<script>
+
+    $(document).ready(function () {
+
+        populatePoke();
+    });
+
+    //   $("#SearchingDiv").on("click", ".js-Details", function () {
+
+
+    //             var id =  document.getElementById('PokeSearch').value;
+
+    //debugger
+
+    //            $.ajax({
+    //            type: "GET",
+    //            url: 'https://pokeapi.co/api/v2/pokemon/'+ id,
+    //            contentType: 'application/json; charset=utf-8',
+    //            success: function (response) {
+
+    //                debugger
+    //                if (response.name == undefined) {
+    //                    document.getElementById('ErrorMessage').innerHTML = "حصل خطأ يرجى المحاولة لاحقاً";
+    //                }
+    //                debugger
+    //                      document.getElementById('PokeDetails').hidden = false;
+    //                      document.getElementById('PokeName').innerHTML = response.name;
+
+    //                      document.getElementById('ability').innerHTML =  response.abilities[0].ability.name;
+
+
+
+
+
+
+
+    //            },
+    //            error: function (response) {
+    //                debugger
+    //                document.getElementById('ErrorMessage').innerHTML = "حصل خطأ يرجى المحاولة لاحقاً";
+
+    //            }
+    //        });
+
+
+
+    //    });
+
+
+    function populatePoke() {
+        $.ajax({
+            type: "GET",
+            url: 'https://pokeapi.co/api/v2/pokemon?limit=30&offset=200',
+            contentType: 'application/json; charset=utf-8',
+            success: function (response) {
+
+                debugger
+                if (response.results == undefined) {
+                    document.getElementById('ErrorMessage').innerHTML = "حصل خطأ يرجى المحاولة لاحقاً";
+                }
+                debugger
+
+                var table = document.getElementById('myTable');
+                debugger
+                for (let i = 0; i < response.results.length; i++) { 
+
+
+                    var row = table.insertRow(i);            // Create a <li> node
+                    var cell1 = row.insertCell(0);
+                    var link = response.results[i].url;
+
+                    cell1.innerHTML = '<button type="button" class="btn btn-link js-Details " data-poke-PokeId=' + response.results[i].url + '>' + response.results[i].name; + '</button>'
+
+                }
+
+
+
+
+
+            },
+            error: function (response) {
+                debugger
+                document.getElementById('ErrorMessage').innerHTML = "حصل خطأ يرجى المحاولة لاحقاً";
+
+            }
+        });
+    }
+
+    $("#myTable").on("click", ".js-Details", function () {
+
+
+        var button = $(this);
+
+        var Pokeurl = button.attr("data-poke-PokeId");
+
+        debugger
+
+        //second call for ajax: to see. details about POKE
+        $.ajax({
+            type: "GET",
+            url: Pokeurl,
+            contentType: 'application/json; charset=utf-8',
+            success: function (response) {
+
+                debugger
+                if (response.results == undefined) {
+                    document.getElementById('ErrorMessage').innerHTML = "حصل خطأ يرجى المحاولة لاحقاً";
+                }
+                debugger
+
+                var noorsArray = [
+                    "one", "two", "three"
+                ];
+
+                // var items = [];
+                // //store items: 
+                // for (let index = 0; index < response.held_items.length; index++) {
+                //     if (response.held_items.length == 0)
+                //         items[0] = "This Poke has no items!";
+
+                //     items[index]=response.held_items.item[index];
+                // }
+
+            
+
+                Swal.fire(
+                    
+                    "Poke Name: " + response.name + "\n" +
+                    "Id: " + response.id + "\n" +
+                    "Order: " + response.order + "\n"  + 
+                    "Base Experience: " + response.base_experience + "\n" + 
+                    "Height: " + response.height + "\n" +
+                    "Weight: " + response.weight + "\n" +
+                    "Species: " + response.species.name + "\n"+
+                    "Ability: " + response.abilities[0].ability.name + "\n" 
+                );
+
+
+
+            },
+            error: function (response) {
+                debugger
+                document.getElementById('ErrorMessage').innerHTML = "حصل خطأ يرجى المحاولة لاحقاً";
+
+            }
+        });
+    });
+</script>

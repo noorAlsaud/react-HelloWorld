@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+
+    <!-- STYLES -->
+    <link type="text/css" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap.min.css">
+    <!-- SCRIPTS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap.min.js"></script>
+
+
+    <title>Poke API</title>
+</head>
+
+<body>
+        <table id="PokeTable">
+            <thead>
+                <tr>
+                    <th>Poke Name</th>
+                    <th>URL</th>
+
+                </tr>
+            </thead>
+        </table>
+
+
+</body>
+
+
+</html>
+
+<script>
+    //when the page loaded: render the table : 
+    $(document).ready(function () {
+        var table = $('#PokeTable').DataTable({
+            ajax: {
+                type: "GET",
+                url: "https://pokeapi.co/api/v2/pokemon/",
+                dataSrc: "results"
+            },
+            columns: [
+                {
+                    "data": "name"
+                },
+                {
+                    "data": "url"
+                }
+            ]
+        });
+    });
+</script>

@@ -1,0 +1,263 @@
+<html>
+
+<head>
+    <title>Try Poke API</title>
+    <!-- CSS only -->
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css">
+    <style>
+        * {
+            text-align: center;
+        }
+
+        table {
+            text-align: center;
+        }
+
+        li {
+            display: inline;
+            color: unset;
+        }
+
+        li:hover {
+            color: green;
+        }
+
+        strong {
+            color: orange;
+            font-size: xx-large;
+        }
+
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        button {
+            background: none;
+            border: none;
+            color: purple;
+            cursor: pointer;
+            font-size: large;
+        }
+
+        button:hover {
+            color: rgb(57, 163, 224);
+            font-size: xx-large;
+        }
+
+        .myList {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .myList>* {
+            flex: 0 0 33%;
+        }
+    </style>
+
+
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://unpkg.com/gridjs/dist/gridjs.umd.js"></script>
+</head>
+
+
+<body>
+    <main class="container">
+        <div class="my-3 p-3 bg-body rounded shadow-sm">
+
+            <!--<div id="SearchingDiv">
+<label>Poke Number</label>
+<input type="text" class="form-control" id="PokeSearch">
+<button  class="btn btn-primary js-Details">Search!</button>
+</div>-->
+
+            <p><strong>Poke List (Click for more Details!)</strong></p>
+
+            <div class="myDiv">
+                <ul class="myList">
+                </ul>
+            </div>
+
+
+            <div id="ErrorMessage"></div>
+
+
+            <!-- 
+            <div id="PokeDetails" hidden="hidden">
+                <label>Name</label>
+                <span id="PokeName" style="background-color:cornflowerblue">Pokemon name</span>
+                <label>ability</label>
+                <span id="ability">Pokemon ability</span>
+            </div> -->
+
+
+        </div>
+    </main>
+
+
+
+</body>
+
+
+
+</html>
+
+<script>
+
+    $(document).ready(function () {
+
+        populatePoke();
+    });
+
+    //   $("#SearchingDiv").on("click", ".js-Details", function () {
+
+
+    //             var id =  document.getElementById('PokeSearch').value;
+
+    //debugger
+
+    //            $.ajax({
+    //            type: "GET",
+    //            url: 'https://pokeapi.co/api/v2/pokemon/'+ id,
+    //            contentType: 'application/json; charset=utf-8',
+    //            success: function (response) {
+
+    //                debugger
+    //                if (response.name == undefined) {
+    //                    document.getElementById('ErrorMessage').innerHTML = "حصل خطأ يرجى المحاولة لاحقاً";
+    //                }
+    //                debugger
+    //                      document.getElementById('PokeDetails').hidden = false;
+    //                      document.getElementById('PokeName').innerHTML = response.name;
+
+    //                      document.getElementById('ability').innerHTML =  response.abilities[0].ability.name;
+
+
+
+
+
+
+
+    //            },
+    //            error: function (response) {
+    //                debugger
+    //                document.getElementById('ErrorMessage').innerHTML = "حصل خطأ يرجى المحاولة لاحقاً";
+
+    //            }
+    //        });
+
+
+
+    //    });
+
+
+    function populatePoke() {
+        $.ajax({
+            type: "GET",
+            url: 'https://pokeapi.co/api/v2/pokemon?limit=200&offset=200',
+            contentType: 'application/json; charset=utf-8',
+            success: function (response) {
+
+                debugger
+                if (response.results == undefined) {
+                    document.getElementById('ErrorMessage').innerHTML = "حصل خطأ يرجى المحاولة لاحقاً";
+                }
+                debugger
+
+                var div = document.getElementById('myDiv');
+                debugger
+                for (let i = 0; i < response.results.length; i++) {
+
+                    $(".myList").append('<li><button type="button" class="js-Details" data-poke-PokeId=' + response.results[i].url + '>' + response.results[i].name + "</button></li>");
+                }
+
+            },
+            error: function (response) {
+                debugger
+                document.getElementById('ErrorMessage').innerHTML = "حصل خطأ يرجى المحاولة لاحقاً";
+
+            }
+        });
+    }
+
+    $(".myList").on("click", ".js-Details", function () {
+
+
+        var button = $(this);
+
+        var Pokeurl = button.attr("data-poke-PokeId");
+
+        debugger
+
+        //second call for ajax: to see details about POKE
+        $.ajax({
+            type: "GET",
+            url: Pokeurl,
+            contentType: 'application/json; charset=utf-8',
+            success: function (response) {
+
+                debugger
+                if (response.results == undefined) {
+                    document.getElementById('ErrorMessage').innerHTML = "حصل خطأ يرجى المحاولة لاحقاً";
+                }
+                debugger
+
+                // var PokeApilities = []; //names[]
+                // var PokeMoves = [];
+
+                // for (let i = 0; i < response.abilities.length; i++) {
+                //     PokeApilities[i] = " "+response.abilities[i].ability.name;
+                //     PokeMoves[i] = " "+response.moves[i].move.name;
+                // }
+
+                var abilities = "";
+                for (let i = 0; i < response.abilities.length; i++) {
+
+                    abilities += response.abilities[i].ability.name
+                }
+                var moves = "";
+                for (let i = 0; i < response.moves.length; i++) {
+
+                    moves += response.moves[i].move.name
+                }
+                var content = "Id: " + response.id +
+                    "<br>Order: " + response.order +
+                    "<br>Base Experience: " + response.base_experience +
+                    "<br>Height: " + response.height +
+                    "<br>Weight: " + response.weight +
+                    "<br>Species: " + response.species.name +
+                    "<br>Abilities: " + abilities +
+                    "<br>Moves: " + moves
+
+                debugger
+
+                Swal.fire({
+                    title: response.name,
+                    html: content
+                });
+
+
+
+            },
+            error: function (response) {
+                debugger
+                document.getElementById('ErrorMessage').innerHTML = "حصل خطأ يرجى المحاولة لاحقاً";
+
+
+                for (let index = 0; index < array.length; index++) {
+                    const element = array[index];
+                    
+                }
+            }
+        });
+    });
+</script>
